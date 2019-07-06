@@ -8,29 +8,47 @@ import java.io.*;
  * Hello world!
  *
  */
-public class App 
-{
-    public static void main( String[] args ) throws IOException
-    {
+public class App {
+
+    public static final int SCALE = 20;
+
+    public static void main( String[] args ) throws IOException {
         System.out.println( "Hello World!" );
-        testRead();
+        drawPic(testDraw(), testRead());
     }
 
-    public static void testDraw() {
-        DrawingPanel panel = new DrawingPanel(1920, 1080);
-        panel.setBackground(Color.LIGHT_GRAY);
+    public static Graphics testDraw() {
+        DrawingPanel panel = new DrawingPanel(28 * SCALE, 28 * SCALE);
+        panel.setBackground(Color.WHITE);
         panel.setGridLines(true);
         Graphics brush = panel.getGraphics();
+        return brush;
     }
 
-    public static void testRead() throws IOException {
-        FileInputStream fis = new FileInputStream("data/t10k-labels.idx1-ubyte");
+    public static int[] testRead() throws IOException {
+        String fileName = "train-images.idx3-ubyte";
+        FileInputStream fis = new FileInputStream("data/" + fileName);
         DataInputStream dis = new DataInputStream(fis);
         System.out.println(dis.readInt()); // magic number
         System.out.println(dis.readInt()); // number of items
-        System.out.println(dis.readUnsignedByte()); // label
-        System.out.println(dis.readUnsignedByte());
-        System.out.println(dis.readUnsignedByte());
-        System.out.println(dis.readUnsignedByte());
+        System.out.println(dis.readInt());
+        System.out.println(dis.readInt());
+        int[] pic = new int[784];
+        for (int i = 0; i < 784; i++) {
+            pic[i] = dis.readUnsignedByte();
+        }
+        return pic;
+    }
+
+    public static void drawPic(Graphics g, int[] pic) {
+        for (int i = 0; i < 784; i++) {
+            int pixel = pic[i];
+            if (pixel != 0) {
+                int color = 256 - pixel;
+                Color newColor = new Color(color, color, color);
+                g.setColor(newColor);
+                g.fillRect(i % 28 * SCALE, i / 28 * SCALE, SCALE, SCALE);
+            }
+        }
     }
 }
