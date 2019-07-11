@@ -30,16 +30,16 @@ public class SimpleANN implements Serializable {
     public void train(List<DataPoint> dataSet) {
         System.out.println("------------Training-----------");
         System.out.println("------------Initializing weights-----------");
-        weights[0] = new Weights(inputDim*hlnn);
-        weights[hln] = new Weights(outputDim*hlnn);
+        weights[0] = new Weights(hlnn, inputDim);
+        weights[hln] = new Weights(outputDim, hlnn);
         for (int i = 1; i < hln; i++) {
-            weights[i] = new Weights(hlnn*hlnn);
+            weights[i] = new Weights(hlnn, hlnn);
         }
         biases[hln] = new Biases(outputDim);
         for (int i = 0; i < hln; i++) {
             biases[i] = new Biases(hlnn);
         }
-        genResult(dataSet.get(0));
+        System.out.println(cost(dataSet.get(0).getLabel(), genResult(dataSet.get(0))));
         System.out.println("------------BackPropagation-----------");
     }
 
@@ -60,17 +60,17 @@ public class SimpleANN implements Serializable {
         // first layer
         double[] outputValue = new double[outputDim];
         for (int i = 0; i < hlnn; i++) {
-            hlv[0][i] = sigmoid(dot(dataPoint.getImage(), weights[0].getWeights()) - biases[0].getBiases()[i]);
+            hlv[0][i] = sigmoid(dot(dataPoint.getImage(), weights[0].getWeights()[i]) + biases[0].getBiases()[i]);
         }
         // mid layers
         for (int j = 1; j < hln; j++) {
             for (int i = 0; i < hlnn; i++) {
-                hlv[j][i] = sigmoid(dot(hlv[j-1], weights[j].getWeights()) - biases[j].getBiases()[i]);
+                hlv[j][i] = sigmoid(dot(hlv[j-1], weights[j].getWeights()[i]) + biases[j].getBiases()[i]);
             }
         }
         for (int i = 0; i < outputDim; i++) {
-            outputValue[i] = sigmoid(dot(hlv[hln-1], weights[hln].getWeights()) - biases[hln].getBiases()[i]);
-            System.out.print(outputValue[i] + " ");
+            outputValue[i] = sigmoid(dot(hlv[hln-1], weights[hln].getWeights()[i]) + biases[hln].getBiases()[i]);
+            System.out.printf("%.2f ", outputValue[i]);
         }
         System.out.println();
         return outputValue;

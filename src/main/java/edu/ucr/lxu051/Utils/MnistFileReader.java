@@ -49,7 +49,8 @@ public class MnistFileReader {
             }
             double[] image = new double[row*col];
             for (int j = 0; j < row*col; j++) {
-                image[j] = dis.readUnsignedByte();
+                int rawPixel = dis.readUnsignedByte();
+                image[j] = rawPixel / 255.0;
             }
             list.add(new DataPoint(image, labels[i], row*col));
         }

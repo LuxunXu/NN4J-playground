@@ -4,19 +4,23 @@ import java.io.Serializable;
 import java.util.Random;
 
 public class Weights implements Serializable {
-    private double[] weights;
-    private long seed = 1;
+    private double[][] weights;
 
-    public Weights(int size) {
+    public Weights(int dim, int size) {
         Random rnd = new Random();
-        rnd.setSeed(seed);
-        this.weights = new double[size];
-        for (int i = 0; i < size; i++) {
-            this.weights[i] = rnd.nextDouble();
+        Random rndPolar = new Random();
+        this.weights = new double[dim][size];
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < size; j++) {
+                if (rndPolar.nextBoolean()) {
+                    this.weights[i][j] = rnd.nextDouble() * 0.1;
+                }
+                this.weights[i][j] = rnd.nextDouble() * -0.1;
+            }
         }
     }
 
-    public double[] getWeights() {
+    public double[][] getWeights() {
         return weights;
     }
 

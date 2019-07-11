@@ -26,7 +26,7 @@ public class App {
     }
 
     public static int[] testRead() throws IOException {
-        String fileName = "train-images.idx3-ubyte";
+        String fileName = "t10k-images.idx3-ubyte";
         FileInputStream fis = new FileInputStream("MnistData/" + fileName);
         DataInputStream dis = new DataInputStream(fis);
         System.out.println(dis.readInt()); // magic number
