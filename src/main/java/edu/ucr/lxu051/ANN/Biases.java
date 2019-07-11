@@ -1,10 +1,12 @@
 package edu.ucr.lxu051.ANN;
 
-public class Biases {
+import java.io.Serializable;
+
+public class Biases implements Serializable {
     private double[] biases;
 
-    public Biases(double[] biases) {
-        this.biases = biases;
+    public Biases(int size) {
+        this.biases = new double[size];
     }
 
     public double[] getBiases() {

@@ -1,26 +1,28 @@
 package edu.ucr.lxu051.Utils;
 
-public class DataPoint {
-    private int inputNum;
-    private byte[] image;
-    private byte label;
+import java.io.Serializable;
 
-    public DataPoint(byte[] image, byte label, int inputNum) {
+public class DataPoint implements Serializable {
+    private int inputNum;
+    private double[] image;
+    private int label;
+
+    public DataPoint(double[] image, int label, int inputNum) {
         assert image.length == inputNum;
         this.inputNum = inputNum;
         this.image = image;
         this.label = label;
     }
 
-    public byte[] getImage() {
+    public double[] getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(double[] image) {
         this.image = image;
     }
 
-    public byte getLabel() {
+    public int getLabel() {
         return label;
     }
 

@@ -27,7 +27,7 @@ public class App {
 
     public static int[] testRead() throws IOException {
         String fileName = "train-images.idx3-ubyte";
-        FileInputStream fis = new FileInputStream("data/" + fileName);
+        FileInputStream fis = new FileInputStream("MnistData/" + fileName);
         DataInputStream dis = new DataInputStream(fis);
         System.out.println(dis.readInt()); // magic number
         System.out.println(dis.readInt()); // number of items
