@@ -10,20 +10,22 @@ public class SimpleANN {
     private int hln; // hiddenLayerNum
     private int hlnn; // hiddenLayerNodeNum
     private int outputNum;
-    private
+    private int inputNum;
+    private Weights[] weights;
+    private Biases[] biases;
 
     enum activationFunction {SIGMOID, RELU};
     enum initialWeights {RANDOM, ZERO};
 
-    public SimpleANN(int hln, int hlnn, int on) {
+    public SimpleANN(int hln, int hlnn, int outputNum, int inputNum) {
         this.hln = hln;
         this.hlnn = hlnn;
-        this.outputNum = on;
+        this.outputNum = outputNum;
+        this.inputNum = inputNum;
     }
 
     public void train(List<DataPoint> dataSet) {
         double[] d = new double[2];
-        SimpleMatrix a = new SimpleMatrix(2, 1, true, d);
-        a.dot(a);
+
     }
 }

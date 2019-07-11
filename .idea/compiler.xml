@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="nn4j-playground" />
+        <module name="NN4J-playground" />
       </profile>
     </annotationProcessing>
   </component>

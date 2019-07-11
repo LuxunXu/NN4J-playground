@@ -1,11 +1,13 @@
 package edu.ucr.lxu051.Utils;
 
 public class DataPoint {
+    private int inputNum;
     private byte[] image;
     private byte label;
 
-    public DataPoint(byte[] image, byte label) {
-        assert image.length == 784;
+    public DataPoint(byte[] image, byte label, int inputNum) {
+        assert image.length == inputNum;
+        this.inputNum = inputNum;
         this.image = image;
         this.label = label;
     }

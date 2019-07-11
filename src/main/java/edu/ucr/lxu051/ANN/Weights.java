@@ -6,4 +6,8 @@ public class Weights {
     public Weights(double[] weights) {
         this.weights = weights;
     }
+
+    public double[] getWeights() {
+        return weights;
+    }
 }

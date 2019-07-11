@@ -6,4 +6,8 @@ public class Biases {
     public Biases(double[] biases) {
         this.biases = biases;
     }
+
+    public double[] getBiases() {
+        return biases;
+    }
 }
