@@ -12,75 +12,75 @@ public class SimpleANN implements Serializable {
     private int hlnn; // hiddenLayerNodeNum
     private int outputDim; // output dimension
     private int inputDim; // input dimension
-    private double[][] hlv; // hidden layer value
-    private Weights[] weights;
-    private Biases[] biases;
+    private SimpleMatrix[] hlv; // hidden layer value
+    private SimpleMatrix[] weights;
+    private SimpleMatrix[][] weightsDeltas; //[num of training data points][]
+    private SimpleMatrix[] biases;
+    private SimpleMatrix[][] biasesDeltas; //[num of training data points][]
     private String activationFunction = "SIGMOID"; // {SIGMOID, RELU}
+    private double learningRate = 0.05;
 
     public SimpleANN(int hln, int hlnn, int outputDim, int inputDim) {
         this.hln = hln;
         this.hlnn = hlnn;
         this.outputDim = outputDim;
         this.inputDim = inputDim;
-        this.weights = new Weights[hln+1];
-        this.biases = new Biases[hln+1];
-        this.hlv = new double[hln][hlnn];
+        this.weights = new SimpleMatrix[hln+1];
+        this.biases = new SimpleMatrix[hln+1];
+        this.hlv = new SimpleMatrix[hln];
     }
 
     public void train(List<DataPoint> dataSet) {
         System.out.println("------------Training-----------");
         System.out.println("------------Initializing weights-----------");
-        weights[0] = new Weights(hlnn, inputDim);
-        weights[hln] = new Weights(outputDim, hlnn);
+        weights[0] = new SimpleMatrix(new Weights(hlnn, inputDim).getWeights());
+        weights[hln] = new SimpleMatrix(new Weights(outputDim, hlnn).getWeights());
         for (int i = 1; i < hln; i++) {
-            weights[i] = new Weights(hlnn, hlnn);
+            weights[i] = new SimpleMatrix(new Weights(hlnn, hlnn).getWeights());
         }
-        biases[hln] = new Biases(outputDim);
+        biases[hln] = new SimpleMatrix(outputDim, 1, true, new Biases(outputDim).getBiases());
         for (int i = 0; i < hln; i++) {
-            biases[i] = new Biases(hlnn);
+            biases[i] =new SimpleMatrix(hlnn, 1, true, new Biases(hlnn).getBiases());
         }
-        System.out.println(cost(dataSet.get(0).getLabel(), genResult(dataSet.get(0))));
+        System.out.println(cost(dataSet.get(0).getLabel(), feedForward(dataSet.get(0))));
         System.out.println("------------BackPropagation-----------");
-    }
-
-    public double dot(double[] a, double[] b) {
-        assert a.length == b.length;
-        double ans = 0.0;
-        for (int i = 0; i < a.length; i++) {
-            ans += a[i] * b[i];
+        this.weightsDeltas = new SimpleMatrix[dataSet.size()][];
+        this.biasesDeltas = new SimpleMatrix[dataSet.size()][];
+        for (int i = 0; i < dataSet.size(); i++) {
+            backPropagation(dataSet.get(i), i);
         }
-        return ans;
     }
 
-    public double sigmoid(double a) {
-        return 1.0 / (1.0 + Math.exp(-a));
+    public SimpleMatrix sigmoid(SimpleMatrix a) {
+        for (int i = 0; i < a.numRows(); i++) {
+           a.set(i, 1.0 / (1.0 + Math.exp(-a.get(i))));
+        }
+        return a;
     }
 
-    public double[] genResult(DataPoint dataPoint) {
+    public SimpleMatrix feedForward(DataPoint dataPoint) {
         // first layer
-        double[] outputValue = new double[outputDim];
-        for (int i = 0; i < hlnn; i++) {
-            hlv[0][i] = sigmoid(dot(dataPoint.getImage(), weights[0].getWeights()[i]) + biases[0].getBiases()[i]);
-        }
+        hlv[0] = sigmoid(weights[0].mult(dataPoint.getImage()).plus(biases[0]));
         // mid layers
         for (int j = 1; j < hln; j++) {
-            for (int i = 0; i < hlnn; i++) {
-                hlv[j][i] = sigmoid(dot(hlv[j-1], weights[j].getWeights()[i]) + biases[j].getBiases()[i]);
-            }
+            hlv[j] = weights[j].mult(hlv[0]).plus(biases[j]);
         }
-        for (int i = 0; i < outputDim; i++) {
-            outputValue[i] = sigmoid(dot(hlv[hln-1], weights[hln].getWeights()[i]) + biases[hln].getBiases()[i]);
-            System.out.printf("%.2f ", outputValue[i]);
-        }
+        // output layer
+        SimpleMatrix outputValue = sigmoid(weights[hln].mult(hlv[hln-1]).plus(biases[hln]));
+        System.out.printf(outputValue.toString());
         System.out.println();
         return outputValue;
     }
 
-    public double cost(int label, double[] output) {
+    public double cost(int label, SimpleMatrix output) {
         double cost = 0.0;
         for (int i = 0; i < outputDim; i++) {
-            cost += Math.pow((label == i ? 1.0 : 0.0 - output[i]), 2);
+            cost += Math.pow((label == i ? 1.0 : 0.0 - output.get(i)), 2);
         }
-        return Math.sqrt(cost);
+        return cost;
+    }
+
+    public boolean backPropagation(DataPoint dp, int index) {
+        return true;
     }
 }
